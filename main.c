@@ -8,6 +8,13 @@ struct Player {
     int wickets;
 };
 
+struct LoginCredentials {
+    char username[50];
+    char password[50];
+};
+
+void executeUserLogin();
+
 void recordRuns(struct Player* player, int runs) {
     player->runs += runs;
 }
@@ -171,6 +178,8 @@ void recordRunOptions(){
 
 
 int main() {
+    executeUserLogin();
+
     int numPlayers,length = 40,defaultFile = 0,loadFromFile,MAX_PLAYERS = 11;
     printHorizontalLine(10);
     printf("Do you want to load player data from a file? (1 for yes, 0 for no): ");
@@ -382,4 +391,69 @@ int main() {
     free(players);
 
     return 0;
+}
+
+void executeUserLogin() {
+    int option1;
+
+    while(1) {
+        printf("SIGN UP (1) or LOGIN (2)?\n");
+        scanf("%d", &option1);
+
+        if (option1 == 1) {
+            ///////////////////SIGN UP//////////////////////
+            struct LoginCredentials user;
+            FILE *file = fopen("login.txt", "r");
+
+            if (file == NULL) {
+                file = fopen("login.txt", "w");
+                printf("Enter a username: ");
+                scanf("%s", user.username);
+                printf("Enter a password: ");
+                scanf("%s", user.password);
+
+                fprintf(file, "%s\t%s", user.username, user.password);
+                printf("Sign up successful!\n");
+                fclose(file);
+              break;
+            } else {
+                printf("YOU HAVE ALREADY SIGNED UP!!! \n");
+                fclose(file);
+            }
+            /////////////////opt1 end
+
+        } else if (option1 == 2) {
+            //////////////////////////LOGIN///////////////////////
+            char userInputUsername[50];
+            char userInputPassword[50];
+
+            printf("Enter your username: ");
+            scanf("%s", userInputUsername);
+            printf("Enter your password: ");
+            scanf("%s", userInputPassword);
+
+            FILE *fptr;
+            fptr = fopen("login.txt", "r");
+            if (fptr != NULL) {
+                char username[50];
+                char password[50];
+                fscanf(fptr, "%s\t%s", username, password);
+
+                if (strcmp(userInputUsername, username) == 0 && strcmp(userInputPassword, password) == 0) {
+                    printf("LOGIN SUCCESSFUL!\n");
+                    fclose(fptr);
+                  break;
+
+                } else {
+                    printf("Invalid username or password!\n");
+                    fclose(fptr);
+                }
+            } else {
+                printf("Error opening file\n");
+            }
+            ////////////////////////LOGIN END//////////////////////
+        } else {
+            continue; // exit while loop if neither 1 nor 2 is entered
+        }
+    }
 }
