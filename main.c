@@ -253,18 +253,6 @@ int main() {
                 } else {
                     printf("Invalid player index.\n");
                 }
-
-                // printf("Enter player index (1-%d): ", numPlayers);
-                // scanf("%d", &playerIndex);
-                // if (playerIndex >= 1 && playerIndex <= numPlayers) {
-                //     printf("Enter runs scored: ");
-                //     scanf("%d", &runs);
-                //     recordRuns(&players[playerIndex - 1], runs);
-                //     printf("Runs recorded.\n");
-                // } else {
-                //     printf("Invalid player index.\n");
-                // }
-
                 break;
             }
 
