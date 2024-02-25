@@ -16,6 +16,43 @@ void recordWickets(struct Player* player, int wickets) {
     player->wickets += wickets;
 }
 
+void addPlayer(struct Player** players, int* numPlayers) {
+    // Increment numPlayers
+    (*numPlayers)++;
+    // Reallocate memory to accommodate the new player
+    *players = (struct Player*)realloc(*players, (*numPlayers) * sizeof(struct Player));
+    if (*players == NULL) {
+        printf("Memory reallocation failed. Exiting...\n");
+        exit(EXIT_FAILURE);
+    }
+    // Input details of the new player
+    printf("Enter name of the new player: ");
+    scanf("%s", (*players)[*numPlayers - 1].name);
+    printf("Enter runs scored by the new player: ");
+    scanf("%d", &(*players)[*numPlayers - 1].runs);
+    printf("Enter wickets taken by the new player: ");
+    scanf("%d", &(*players)[*numPlayers - 1].wickets);
+}
+
+
+void removePlayer(struct Player* players, int* numPlayers, const char* playerName) {
+    int found = 0;
+    for (int i = 0; i < *numPlayers; i++) {
+        if (strcmp(players[i].name, playerName) == 0) {
+            found = 1;
+            // Shift elements to the left to overwrite the player being removed
+            for (int j = i; j < *numPlayers - 1; j++) {
+                players[j] = players[j + 1];
+            }
+            (*numPlayers)--;
+            break;
+        }
+    }
+    if (!found) {
+        printf("Player '%s' not found.\n", playerName);
+    }
+}
+
 // void displayPlayerStatistics(const struct Player* player) {
 //     printf("Player: %s\n", player->name);
 //     printf("Runs: %d\n", player->runs);
@@ -134,7 +171,7 @@ void recordRunOptions(){
 
 
 int main() {
-    int numPlayers,length = 40,defaultFile = 0,loadFromFile;
+    int numPlayers,length = 40,defaultFile = 0,loadFromFile,MAX_PLAYERS = 11;
     printHorizontalLine(10);
     printf("Do you want to load player data from a file? (1 for yes, 0 for no): ");
     scanf("%d", &loadFromFile);
@@ -201,7 +238,9 @@ int main() {
         printf("4. Display Filtered Players\n");
         printf("5. Search and Display Player\n");
         printf("6. Save Player Data to File\n");
-        printf("7. Exit\n");
+        printf("7. Add Player\n");
+        printf("8. Remove Player\n");
+        printf("9. Exit\n");
         printHorizontalLine(length);
         printf("Enter your choice: ");
         scanf("%d", &choice);
@@ -315,14 +354,30 @@ int main() {
                 }
                 break;
             }
-            case 7:
+            case 7: {
+                    if (numPlayers < MAX_PLAYERS) { // MAX_PLAYERS is the maximum number of players allowed
+                        addPlayer(&players, &numPlayers);
+                        printf("Player added successfully.\n");
+                    } else {
+                        printf("Cannot add more players. Team is full.\n");
+                    }
+                    break;
+                }
+            case 8: {
+                char playerName[50];
+                printf("Enter the name of the player to remove: ");
+                scanf("%s", playerName);
+                removePlayer(players, &numPlayers, playerName);
+                break;
+            }
+            case 9:
                 printf("Exiting...\n");
                 break;
             default:
                 printf("Invalid choice. Try again.\n");
         }
         // system("clear");
-    } while (choice != 7);
+    } while (choice != 9);
     // Free allocated memory
     free(players);
 
