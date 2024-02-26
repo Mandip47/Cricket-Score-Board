@@ -23,6 +23,12 @@ void recordWickets(struct Player* player, int wickets) {
     player->wickets += wickets;
 }
 
+void tableheaderPrint(){
+    printf("+----------------------+--------+----------+\n");
+    printf("| Players Name         | Runs   | Wickets  |\n");
+    printf("+----------------------+--------+----------+\n");
+}
+
 void addPlayer(struct Player** players, int* numPlayers) {
     // Increment numPlayers
     (*numPlayers)++;
@@ -95,9 +101,7 @@ void displayTeamStatistics(const struct Player* players, int numPlayers) {
 void displayFilteredPlayers(const struct Player* players, int numPlayers, int filterRuns, int filterWickets) {
     printHorizontalLine(40);
     printf("Filtered Players:\n");
-    printf("+----------------------+--------+----------+\n");
-    printf("| Player Name          | Runs   | Wickets  |\n");
-    printf("+----------------------+--------+----------+\n");
+    tableheaderPrint();
     for (int i = 0; i < numPlayers; i++) {
         if (players[i].runs > filterRuns || players[i].wickets > filterWickets) {
             displayPlayerStatistics(&players[i]);
@@ -109,9 +113,7 @@ void displayFilteredPlayers(const struct Player* players, int numPlayers, int fi
 
 void searchAndDisplayPlayer(const struct Player* players, int numPlayers, const char* playerName) {
     int found = 0;
-    printf("+----------------------+--------+----------+\n");
-    printf("| Player Name          | Runs   | Wickets  |\n");
-    printf("+----------------------+--------+----------+\n");
+    tableheaderPrint();
     for (int i = 0; i < numPlayers; i++) {
         if (strcmp(players[i].name, playerName) == 0) {
             found = 1;
@@ -128,10 +130,9 @@ void searchAndDisplayPlayer(const struct Player* players, int numPlayers, const 
 }
 
 
+
 void displaySystemState(const struct Player* players, int numPlayers) {
-    printf("+----------------------+--------+----------+\n");
-    printf("| Players Name         | Runs   | Wickets  |\n");
-    printf("+----------------------+--------+----------+\n");
+    tableheaderPrint();
     for (int i = 0; i < numPlayers; i++) {
         displayPlayerStatistics(&players[i]);
         // printf("\n");
