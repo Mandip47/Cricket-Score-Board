@@ -13,192 +13,23 @@ struct LoginCredentials {
     char password[50];
 };
 
+//functions decelerations
 void executeUserLogin();
-
-void recordRuns(struct Player* player, int runs) {
-    player->runs += runs;
-}
-
-void recordWickets(struct Player* player, int wickets) {
-    player->wickets += wickets;
-}
-
-void clearInputBuffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
-
-int safeInput(const char *format, void *input) {
-    int result;
-    do {
-        // printf("Enter your input: ");  // Ask the same question again
-        result = scanf(format, input);
-        clearInputBuffer();
-        if (result != 1) {
-            printf("Invalid input.\n");
-            printf("Please enter a valid value Again : ");
-        }
-    } while (result != 1);
-    
-    return result;
-}
-
-
-
-
-void tableheaderPrint(){
-    printf("+----------------------+--------+----------+\n");
-    printf("| Players Name         | Runs   | Wickets  |\n");
-    printf("+----------------------+--------+----------+\n");
-}
-
-void addPlayer(struct Player** players, int* numPlayers) {
-    // Increment numPlayers
-    (*numPlayers)++;
-    // Reallocate memory to accommodate the new player
-    *players = (struct Player*)realloc(*players, (*numPlayers) * sizeof(struct Player));
-    if (*players == NULL) {
-        printf("Memory reallocation failed. Exiting...\n");
-        exit(EXIT_FAILURE);
-    }
-    // Input details of the new player
-    printf("Enter name of the new player: ");
-    safeInput("%s", (*players)[*numPlayers - 1].name);
-    printf("Enter runs scored by the new player: ");
-    safeInput("%d", &(*players)[*numPlayers - 1].runs);
-    printf("Enter wickets taken by the new player: ");
-    safeInput("%d", &(*players)[*numPlayers - 1].wickets);
-}
-
-
-void removePlayer(struct Player* players, int* numPlayers, const char* playerName) {
-    int found = 0;
-    for (int i = 0; i < *numPlayers; i++) {
-        if (strcmp(players[i].name, playerName) == 0) {
-            found = 1;
-            // Shift elements to the left to overwrite the player being removed
-            for (int j = i; j < *numPlayers - 1; j++) {
-                players[j] = players[j + 1];
-            }
-            (*numPlayers)--;
-            break;
-        }
-    }
-    if (!found) {
-        printf("Player '%s' not found.\n", playerName);
-    }
-}
-
-// void displayPlayerStatistics(const struct Player* player) {
-//     printf("Player: %s\n", player->name);
-//     printf("Runs: %d\n", player->runs);
-//     printf("Wickets: %d\n", player->wickets);
-// }
-void printHorizontalLine(int length) {
-    for(int i = 0; i < length; i++) {
-        printf("-");
-    }
-    printf("\n");
-}
-
-
-void displayPlayerStatistics(const struct Player* player) {
-    printf("| %-20s | %-6d | %-8d |\n", player->name, player->runs, player->wickets);
-}
-
-
-void displayTeamStatistics(const struct Player* players, int numPlayers) {
-    int totalRuns = 0;
-    int totalWickets = 0;
-    for (int i = 0; i < numPlayers; i++) {
-        totalRuns += players[i].runs;
-        totalWickets += players[i].wickets;
-    }
-    printf("| %-20s | %-6d | %-8d |\n", "Total", totalRuns, totalWickets);
-
-    // printf("Team Statistics:\n");
-    // printf("Total Runs: %d\n", totalRuns);
-    // printf("Total Wickets: %d\n", totalWickets);
-}
-
-void displayFilteredPlayers(const struct Player* players, int numPlayers, int filterRuns, int filterWickets) {
-    printHorizontalLine(40);
-    printf("Filtered Players:\n");
-    tableheaderPrint();
-    for (int i = 0; i < numPlayers; i++) {
-        if (players[i].runs > filterRuns || players[i].wickets > filterWickets) {
-            displayPlayerStatistics(&players[i]);
-            // printf("\n");
-        }
-    }
-    printf("+----------------------+--------+----------+\n");
-}
-
-void searchAndDisplayPlayer(const struct Player* players, int numPlayers, const char* playerName) {
-    int found = 0;
-    tableheaderPrint();
-    for (int i = 0; i < numPlayers; i++) {
-        if (strcmp(players[i].name, playerName) == 0) {
-            found = 1;
-            displayPlayerStatistics(&players[i]);
-            break;
-        }
-    }
-    printf("+----------------------+--------+----------+\n");
-
-    if (!found) {
-        printf("Player not found.\n");
-    }
-    
-}
-
-
-
-void displaySystemState(const struct Player* players, int numPlayers) {
-    tableheaderPrint();
-    for (int i = 0; i < numPlayers; i++) {
-        displayPlayerStatistics(&players[i]);
-        // printf("\n");
-    }
-    printf("+----------------------+--------+----------+\n");
-    displayTeamStatistics(players, numPlayers);
-    printf("+----------------------+--------+----------+\n");
-}
-
-void savePlayersToFile(const struct Player* players, int numPlayers, const char* fileName) {
-    FILE* file = fopen(fileName, "w");
-    if (file == NULL) {
-        printf("Error opening file for writing. Exiting...\n");
-        exit(EXIT_FAILURE);
-    }
-
-    for (int i = 0; i < numPlayers; i++) {
-        fprintf(file, "%s %d %d\n", players[i].name, players[i].runs, players[i].wickets);
-    }
-
-    fclose(file);
-}
-
-void loadPlayersFromFile(struct Player* players, int numPlayers, const char* fileName) {
-    FILE* file = fopen(fileName, "r");
-    if (file == NULL) {
-        printf("Error opening file for reading. Exiting...\n");
-        exit(EXIT_FAILURE);
-    }
-
-    for (int i = 0; i < numPlayers; i++) {
-        if (fscanf(file, "%s %d %d", players[i].name, &players[i].runs, &players[i].wickets) != 3) {
-            printf("Error reading data from file. Exiting...\n");
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    fclose(file);
-}
-
-void recordRunOptions(){
-
-}
+void recordRuns(struct Player* player, int runs);
+void recordWickets(struct Player* player, int wickets);
+void displayTeamStatistics(const struct Player* players, int numPlayers);
+void displayPlayerStatistics(const struct Player* player);
+void displayFilteredPlayers(const struct Player* players, int numPlayers, int filterRuns, int filterWickets);
+void searchAndDisplayPlayer(const struct Player* players, int numPlayers, const char* playerName);
+void savePlayersToFile(const struct Player* players, int numPlayers, const char* fileName);
+void addPlayer(struct Player** players, int* numPlayers);
+void removePlayer(struct Player* players, int* numPlayers, const char* playerName);
+void tableheaderPrint();
+void printHorizontalLine(int length);
+void displaySystemState(const struct Player* players, int numPlayers);
+void loadPlayersFromFile(struct Player* players, int numPlayers, const char* fileName);
+void clearInputBuffer();
+int safeInput(const char *format, void *input);
 
 
 int main() {
@@ -409,13 +240,14 @@ int main() {
             default:
                 printf("Invalid choice. Try again.\n");
         }
-        // system("clear");
     } while (choice != 9);
     // Free allocated memory
     free(players);
 
     return 0;
 }
+
+// Function Definition
 
 void executeUserLogin() {
     int option1;
@@ -480,4 +312,183 @@ void executeUserLogin() {
             continue; // exit while loop if neither 1 nor 2 is entered
         }
     }
+}
+
+void recordRuns(struct Player* player, int runs) {
+    player->runs += runs;
+}
+
+void recordWickets(struct Player* player, int wickets) {
+    player->wickets += wickets;
+}
+
+void clearInputBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+int safeInput(const char *format, void *input) {
+    int result;
+    do {
+        // printf("Enter your input: ");  // Ask the same question again
+        result = scanf(format, input);
+        clearInputBuffer();
+        if (result != 1) {
+            printf("Invalid input.\n");
+            printf("Please enter a valid value Again : ");
+        }
+    } while (result != 1);
+    
+    return result;
+}
+
+
+
+
+void tableheaderPrint(){
+    printf("+----------------------+--------+----------+\n");
+    printf("| Players Name         | Runs   | Wickets  |\n");
+    printf("+----------------------+--------+----------+\n");
+}
+
+void addPlayer(struct Player** players, int* numPlayers) {
+    // Increment numPlayers
+    (*numPlayers)++;
+    // Reallocate memory to accommodate the new player
+    *players = (struct Player*)realloc(*players, (*numPlayers) * sizeof(struct Player));
+    if (*players == NULL) {
+        printf("Memory reallocation failed. Exiting...\n");
+        exit(EXIT_FAILURE);
+    }
+    // Input details of the new player
+    printf("Enter name of the new player: ");
+    safeInput("%s", (*players)[*numPlayers - 1].name);
+    printf("Enter runs scored by the new player: ");
+    safeInput("%d", &(*players)[*numPlayers - 1].runs);
+    printf("Enter wickets taken by the new player: ");
+    safeInput("%d", &(*players)[*numPlayers - 1].wickets);
+}
+
+
+void removePlayer(struct Player* players, int* numPlayers, const char* playerName) {
+    int found = 0;
+    for (int i = 0; i < *numPlayers; i++) {
+        if (strcmp(players[i].name, playerName) == 0) {
+            found = 1;
+            // Shift elements to the left to overwrite the player being removed
+            for (int j = i; j < *numPlayers - 1; j++) {
+                players[j] = players[j + 1];
+            }
+            (*numPlayers)--;
+            break;
+        }
+    }
+    if (!found) {
+        printf("Player '%s' not found.\n", playerName);
+    }
+}
+
+// void displayPlayerStatistics(const struct Player* player) {
+//     printf("Player: %s\n", player->name);
+//     printf("Runs: %d\n", player->runs);
+//     printf("Wickets: %d\n", player->wickets);
+// }
+void printHorizontalLine(int length) {
+    for(int i = 0; i < length; i++) {
+        printf("-");
+    }
+    printf("\n");
+}
+
+
+void displayPlayerStatistics(const struct Player* player) {
+    printf("| %-20s | %-6d | %-8d |\n", player->name, player->runs, player->wickets);
+}
+
+
+void displayTeamStatistics(const struct Player* players, int numPlayers) {
+    int totalRuns = 0;
+    int totalWickets = 0;
+    for (int i = 0; i < numPlayers; i++) {
+        totalRuns += players[i].runs;
+        totalWickets += players[i].wickets;
+    }
+    printf("| %-20s | %-6d | %-8d |\n", "Total", totalRuns, totalWickets);
+
+    // printf("Team Statistics:\n");
+    // printf("Total Runs: %d\n", totalRuns);
+    // printf("Total Wickets: %d\n", totalWickets);
+}
+
+void displayFilteredPlayers(const struct Player* players, int numPlayers, int filterRuns, int filterWickets) {
+    printHorizontalLine(40);
+    printf("Filtered Players:\n");
+    tableheaderPrint();
+    for (int i = 0; i < numPlayers; i++) {
+        if (players[i].runs > filterRuns || players[i].wickets > filterWickets) {
+            displayPlayerStatistics(&players[i]);
+            // printf("\n");
+        }
+    }
+    printf("+----------------------+--------+----------+\n");
+}
+
+void searchAndDisplayPlayer(const struct Player* players, int numPlayers, const char* playerName) {
+    int found = 0;
+    tableheaderPrint();
+    for (int i = 0; i < numPlayers; i++) {
+        if (strcmp(players[i].name, playerName) == 0) {
+            found = 1;
+            displayPlayerStatistics(&players[i]);
+            break;
+        }
+    }
+    printf("+----------------------+--------+----------+\n");
+
+    if (!found) {
+        printf("Player not found.\n");
+    }
+    
+}
+
+void displaySystemState(const struct Player* players, int numPlayers) {
+    tableheaderPrint();
+    for (int i = 0; i < numPlayers; i++) {
+        displayPlayerStatistics(&players[i]);
+        // printf("\n");
+    }
+    printf("+----------------------+--------+----------+\n");
+    displayTeamStatistics(players, numPlayers);
+    printf("+----------------------+--------+----------+\n");
+}
+
+void savePlayersToFile(const struct Player* players, int numPlayers, const char* fileName) {
+    FILE* file = fopen(fileName, "w");
+    if (file == NULL) {
+        printf("Error opening file for writing. Exiting...\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < numPlayers; i++) {
+        fprintf(file, "%s %d %d\n", players[i].name, players[i].runs, players[i].wickets);
+    }
+
+    fclose(file);
+}
+
+void loadPlayersFromFile(struct Player* players, int numPlayers, const char* fileName) {
+    FILE* file = fopen(fileName, "r");
+    if (file == NULL) {
+        printf("Error opening file for reading. Exiting...\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < numPlayers; i++) {
+        if (fscanf(file, "%s %d %d", players[i].name, &players[i].runs, &players[i].wickets) != 3) {
+            printf("Error reading data from file. Exiting...\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    fclose(file);
 }
