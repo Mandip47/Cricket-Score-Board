@@ -23,6 +23,29 @@ void recordWickets(struct Player* player, int wickets) {
     player->wickets += wickets;
 }
 
+void clearInputBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+int safeInput(const char *format, void *input) {
+    int result;
+    do {
+        // printf("Enter your input: ");  // Ask the same question again
+        result = scanf(format, input);
+        clearInputBuffer();
+        if (result != 1) {
+            printf("Invalid input.\n");
+            printf("Please enter a valid value Again : ");
+        }
+    } while (result != 1);
+    
+    return result;
+}
+
+
+
+
 void tableheaderPrint(){
     printf("+----------------------+--------+----------+\n");
     printf("| Players Name         | Runs   | Wickets  |\n");
@@ -40,11 +63,11 @@ void addPlayer(struct Player** players, int* numPlayers) {
     }
     // Input details of the new player
     printf("Enter name of the new player: ");
-    scanf("%s", (*players)[*numPlayers - 1].name);
+    safeInput("%s", (*players)[*numPlayers - 1].name);
     printf("Enter runs scored by the new player: ");
-    scanf("%d", &(*players)[*numPlayers - 1].runs);
+    safeInput("%d", &(*players)[*numPlayers - 1].runs);
     printf("Enter wickets taken by the new player: ");
-    scanf("%d", &(*players)[*numPlayers - 1].wickets);
+    safeInput("%d", &(*players)[*numPlayers - 1].wickets);
 }
 
 
@@ -184,13 +207,13 @@ int main() {
     int numPlayers,length = 40,defaultFile = 0,loadFromFile,MAX_PLAYERS = 11;
     printHorizontalLine(10);
     printf("Do you want to load player data from a file? (1 for yes, 0 for no): ");
-    scanf("%d", &loadFromFile);
+    safeInput("%d", &loadFromFile);
     char fileName[50]; // Declare the filename variable outside the if block
 
     if (loadFromFile) {
         printHorizontalLine(length);
         printf("Enter the filename to load data from: ");
-        scanf("%s", fileName);
+        safeInput("%s", fileName);
         system("clear");
 
         FILE* file = fopen(fileName, "r");
@@ -212,7 +235,7 @@ int main() {
     } else {
         printHorizontalLine(length);
         printf("Enter the number of players in the cricket team: ");
-        scanf("%d", &numPlayers);
+        safeInput("%d", &numPlayers);
     }
 
     // Dynamically allocate memory for players
@@ -228,7 +251,7 @@ int main() {
     } else {
         for (int i = 0; i < numPlayers; i++) {
             printf("Enter name of player %d: ", i + 1);
-            scanf("%s", players[i].name);
+            safeInput("%s", players[i].name);
             players[i].runs = 0;
             players[i].wickets = 0;
         }
@@ -253,7 +276,7 @@ int main() {
         printf("9. Exit\n");
         printHorizontalLine(length);
         printf("Enter your choice: ");
-        scanf("%d", &choice);
+        safeInput("%d", &choice);
         printHorizontalLine(length);
 
         switch (choice) {
@@ -263,7 +286,7 @@ int main() {
                 int playerIndex, runs,runChoice;
 
                  printf("Enter player index (1-%d): ", numPlayers);
-                 scanf("%d", &playerIndex);
+                 safeInput("%d", &playerIndex);
 
                 if (playerIndex >= 1 && playerIndex <= numPlayers) {
 
@@ -272,7 +295,7 @@ int main() {
                 printf("2. Add 4 Run\n");
                 printf("3. Record Custom Runs\n");
                 printf("Enter your choice: ");
-                scanf("%d", &runChoice);
+                safeInput("%d", &runChoice);
 
                 switch(runChoice){
                     case 1:{
@@ -287,7 +310,7 @@ int main() {
                     }
                     case 3:{
                            printf("\nEnter runs scored: ");
-                           scanf("%d", &runs);
+                           safeInput("%d", &runs);
                            recordRuns(&players[playerIndex - 1], runs);
                            printf("Runs recorded.\n");
                            break;
@@ -309,10 +332,10 @@ int main() {
                 // Record Wickets
                 int playerIndex, wickets;
                 printf("Enter player index (1-%d): ", numPlayers);
-                scanf("%d", &playerIndex);
+                safeInput("%d", &playerIndex);
                 if (playerIndex >= 1 && playerIndex <= numPlayers) {
                     printf("Enter wickets taken: ");
-                    scanf("%d", &wickets);
+                    safeInput("%d", &wickets);
                     recordWickets(&players[playerIndex - 1], wickets);
                     printf("Wickets recorded.\n");
                 } else {
@@ -328,9 +351,9 @@ int main() {
                 // Display Filtered Players
                 int filterRuns, filterWickets;
                 printf("Enter minimum runs to display: ");
-                scanf("%d", &filterRuns);
+                safeInput("%d", &filterRuns);
                 printf("Enter minimum wickets to display: ");
-                scanf("%d", &filterWickets);
+                safeInput("%d", &filterWickets);
                 displayFilteredPlayers(players, numPlayers, filterRuns, filterWickets);
                 break;
             }
@@ -338,7 +361,7 @@ int main() {
                 // Search and Display Player
                 char playerName[50];
                 printf("Enter player name to search: ");
-                scanf("%s", playerName);
+                safeInput("%s", playerName);
                 searchAndDisplayPlayer(players, numPlayers, playerName);
                 break;
             }
@@ -349,11 +372,11 @@ int main() {
                     char fileName2[50];
                     int option;
                     printf("Enter the filename to save data to  : ");
-                    scanf("%s", fileName2);
+                    safeInput("%s", fileName2);
                     savePlayersToFile(players, numPlayers, fileName2);
                     printf("Player data saved to %s.\n", fileName2);
                     printf("Do you want to make file default? (yes for 1):");
-                    scanf("%d",&option);
+                    safeInput("%d",&option);
                     if(option == 1){
                         defaultFile = 1;
                         strcpy(fileName,fileName2);
@@ -376,7 +399,7 @@ int main() {
             case 8: {
                 char playerName[50];
                 printf("Enter the name of the player to remove: ");
-                scanf("%s", playerName);
+                safeInput("%s", playerName);
                 removePlayer(players, &numPlayers, playerName);
                 break;
             }
@@ -399,7 +422,7 @@ void executeUserLogin() {
 
     while(1) {
         printf("SIGN UP (1) or LOGIN (2)?\n");
-        scanf("%d", &option1);
+        safeInput("%d", &option1);
 
         if (option1 == 1) {
             ///////////////////SIGN UP//////////////////////
@@ -409,9 +432,9 @@ void executeUserLogin() {
             if (file == NULL) {
                 file = fopen("login.txt", "w");
                 printf("Enter a username: ");
-                scanf("%s", user.username);
+                safeInput("%s", user.username);
                 printf("Enter a password: ");
-                scanf("%s", user.password);
+                safeInput("%s", user.password);
 
                 fprintf(file, "%s\t%s", user.username, user.password);
                 printf("Sign up successful!\n");
@@ -429,9 +452,9 @@ void executeUserLogin() {
             char userInputPassword[50];
 
             printf("Enter your username: ");
-            scanf("%s", userInputUsername);
+            safeInput("%s", userInputUsername);
             printf("Enter your password: ");
-            scanf("%s", userInputPassword);
+            safeInput("%s", userInputPassword);
 
             FILE *fptr;
             fptr = fopen("login.txt", "r");
